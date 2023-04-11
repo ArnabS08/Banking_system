@@ -1,3 +1,15 @@
+import mysql.connector
+
+connection = mysql.connector.connect(
+    user = 'root',
+    database = 'bank_data',
+    password = 'Appu2008!'
+)
+
+cursor = connection.cursor()
+testQuery = ("SELECT * FROM data")
+cursor.execute(testQuery)
+
 print("Welcome to Monkey Bank!")
 
 while True:
