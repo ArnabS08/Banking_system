@@ -23,16 +23,52 @@ testQuery = ("SELECT * FROM data")
 #   print(x)
 
 "**************************************************************************************"
-
-print("Welcome to Monkey Bank!")
+# def equal_checker(column, object):
+#     selectColumn = ("SELECT %s FROM data")
+#     cursor.execute(selectColumn, column)
+#     object = cursor.fetchall()
+#     for x in object:
+#         if selectColumn == "account_num":
+#             while selectColumn == x:
+#                 global account_num
+#                 account_num = random.randint(999999999,10000000000)
+#         elif selectColumn == "pin":
+#             global pin
+#             found = False
+#             repeat = True
+#             for x in object:
+#                 if int(pin) == x:
+#                     repeat == True
+#                     found = True
+#             if found == False:
+#                 print("Wrong PIN")
+#                 print("try again")
+            
+"**************************************************************************************"
+print("\nWelcome to Monke Bank!")
 
 while True:
-    log_or_sign = input("Login in or sign up? ")
+    log_or_sign = input("\nLogin, sign up, or exit? ")
 
-    if log_or_sign.lower() == "login in":
-        account_num = input("Acount number: ")
-        pin = input("PIN: ")
-        break
+    if log_or_sign.lower() == "login":
+        found = False
+        repeat = True
+        while repeat == True:
+            pin = input("\nPIN: ")
+            cursor.execute("SELECT pin FROM data")
+            login = cursor.fetchall()
+            for x in login:
+                if int(pin) == x:
+                    repeat = False
+                    found = True
+            if found == False:
+                print("Wrong PIN")
+                print("try again")
+
+                
+            # pin = input("\nPIN: ")
+            # equal_checker("pin", "login")
+
 
     elif log_or_sign.lower() == "sign up":
         first_name = input("First name: ")
@@ -54,10 +90,14 @@ while True:
             connection.commit() # This commits the new data.
 
             print(f"New user has been created.\nWelcome {first_name} {last_name}!")
-            break
+
         except:
             connection.rollback() # If an error occured while commiting, this reverses the commit.
             print("There was a problem while creating your account, please try again.")
 
+    elif log_or_sign.lower() == "exit":
+        print("Thank you, goodbye!")
+        break
+
     else:
-        print("You can only type login in, or sign up.")
+        print("You can only type login in, sign up, or exit.")
