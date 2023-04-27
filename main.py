@@ -62,31 +62,34 @@ print("\nWelcome to Monke Bank!")
 
 "**************************************************************************************"
 def login():
-    found = False
+    found1 = False
+    found2 = False
     repeat = True
     while repeat == True:
-        global real_pin
-        real_pin = input("\nPIN: ")
+        # global real_pin
+        real_pin = int(input("\nPIN: "))
         cursor.execute("SELECT pin FROM data")
-        login = cursor.fetchall()
-        for x in login:
-            if int(real_pin) == x[0]:
-                repeat = False
-                found = True
-        if found == False:
-            print("Wrong PIN")
-            print("try again")
-        global real_accnum
-        real_accnum = input("Account Number: ")
+        pins = cursor.fetchall()
+        for x in pins:
+            if real_pin == x[0]:
+                found1 = True
+
+        # global real_accnum
+        real_accnum = int(input("Account Number: "))
         cursor.execute("SELECT account_num FROM data")
-        login = cursor.fetchall()
-        for x in login:
-            if int(real_accnum) == x[0]:
-                repeat = False
-                found = True
-        if found == False:
-            print("Wrong PIN")
-            print("try again")
+        accountNums = cursor.fetchall()
+        for x in accountNums:
+            if real_accnum == x[0]:
+                found2 = True
+
+        if found1 and found2 == True:
+            print("welcome!")
+            # name = ("SELECT first_name, last_name FROM data WHERE account_num[0]=%s")
+            # print(f"Welcome {cursor.execute(name, real_accnum)}")
+            repeat = False
+        else:
+            print("\nWrong PIN or Account Number")
+            print("Please try again")
 
 # def login_checker():
 #     global repeat
@@ -112,8 +115,8 @@ def sign_in():
     account_num = random.randint(100000,999999)
 
     cursor.execute("SELECT account_num FROM data")
-    accNum = cursor.fetchall()
-    for x in accNum:
+    accNums = cursor.fetchall()
+    for x in accNums:
         while account_num == x[0]:
             account_num = random.randint(100000,999999)
 
