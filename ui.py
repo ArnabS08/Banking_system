@@ -2,6 +2,10 @@ import random
 
 import mysql.connector
 
+import tkinter as tk
+
+window = tk.Tk()
+
 connection = mysql.connector.connect(
     user = 'root',
     database = 'bank_data',
@@ -13,7 +17,7 @@ connection = mysql.connector.connect(
 #     print('Connected to MySQL database')
 
 cursor = connection.cursor()
-addData = ("INSERT INTO data(account_num, pin, name, birth_date, balance) VALUES(%s, %s, %s, %s, %s);")
+addData = ("INSERT INTO data(account_num, pin, first_name, last_name, birth_date, balance) VALUES(%s, %s, %s, %s, %s, %s);")
 testQuery = ("SELECT * FROM data")
 
 ### Prints database
@@ -22,7 +26,9 @@ testQuery = ("SELECT * FROM data")
 # for x in database:
 #   print(x)
 
-print("\nWelcome to Monke Bank!")
+tk.Label(text="\nWelcome to Monke Bank!").pack()
+log_or_sign = tk.Label(text="\nLogin, sign up, or exit? ")
+entry = tk.Entry()
 
 
 "**************************************************************************************"
@@ -63,20 +69,9 @@ print("\nWelcome to Monke Bank!")
 "**************************************************************************************"
 
 
-def deposit(balance, real_accnum):
-    deposit_num = float(input("Amount of deposit: "))
-    deposit_num = balance + deposit_num
-    deposit = (f"UPDATE data SET balance ={deposit_num} WHERE account_num = {real_accnum}")
-    cursor.execute(deposit)
-    connection.commit()
-    print(f"${deposit_num - balance} has been deposited")
-    print(f"You now have ${deposit_num}")
-
-"**************************************************************************************"
-
-
 def login():
     found1 = False
+    found2 = False
     # found3 = False
     repeat = True
     while repeat == True:
@@ -88,39 +83,38 @@ def login():
             if real_pin == x[0]:
                 found1 = True
 
-        if found1 == True:
-            # Checks if any account number in the database is equal to the account number that was input.
-            real_accnum = int(input("Account number: "))
-            accFinder = (f"SELECT account_num FROM data WHERE pin={real_pin}")
-            cursor.execute(accFinder)
-            accountNums = (cursor.fetchone()[0]) # fetchs one data and takes the first index from the tuple ex: takes the 111111 from (111111,)
-            if real_accnum == accountNums:
-                nameFinder = (f"SELECT name FROM data WHERE account_num = {real_accnum}")
-                cursor.execute(nameFinder)
-                print_name = (cursor.fetchone()[0])
+        # Checks if any account number in the database is equal to the account number that was input.
+        real_accnum = int(input("Account number: "))
+        cursor.execute("SELECT account_num FROM data")
+        accountNums = cursor.fetchall()
+        for x in accountNums:
+            if real_accnum == x[0]:
+                found2 = True
 
-                balanceFinder = (f"SELECT balance FROM data WHERE account_num = {real_accnum}")
-                cursor.execute(balanceFinder)
-                balance = float(cursor.fetchone()[0])
+        # # Checks if any name in the database is equal to the name that was input.
+        # real_name = input("First name: ")
+        # cursor.execute("SELECT first_name FROM data")
+        # names = cursor.fetchall()
+        # for x in names:
+        #     if real_name == x:
+        #         found3 = True
 
-                print(f"\nWelcome {print_name}!\nYou have ${balance} in your account.")
-                repeat = False
-            else:
-                print("\nWrong account number.")
-                print("Please try again.")
+        # Checks if everything is correct
+        if found1 and found2 == True:
+            print("welcome!")
+            # query = "SELECT first_name FROM data WHERE account_num =%s" (real_accnum)
+            # print(query)
+            # cursor.execute("SELECT first_name FROM data WHERE account_num =%s", str(real_accnum))
+            
+            acc = (f"SELECT first_name FROM data WHERE account_num = {real_accnum}")
+            cursor.execute(acc)
+            name =(cursor.fetchone()[0])
+
+            print(f"Welcome {name}")
+            repeat = False
         else:
-            print("\nWrong PIN.")
-            print("Please try again.")
-
-    while True:
-        d_or_w = input("\nWould you like to deposit or withdrawal? ")
-        if d_or_w.lower() == "deposit":
-            deposit(balance, real_accnum)
-        elif d_or_w.lower() == "withdrawal":
-            # withdraw()
-            print("") #### TAKE OUT
-        else:
-            print("You can only type deposit or withdrawal")
+            print("\nWrong PIN or account number.")
+            print("Please try again")
 
 
 # def login_checker():
@@ -140,7 +134,8 @@ def login():
 
 
 def sign_in():
-    name = input("Name: ")
+    first_name = input("First name: ")
+    last_name = input("Last name: ")
     birth_date = input("Date of birth (YYYY-MM-DD): ")
     pin = int(input("Create PIN: "))
     account_num = random.randint(100000,999999)
@@ -151,14 +146,14 @@ def sign_in():
         while account_num == x[0]:
             account_num = random.randint(100000,999999)
 
-    data = [account_num, pin, name, birth_date, 0.00] # All info is put in a list in this order to put in database
+    data = [account_num, pin, first_name, last_name, birth_date, 0.00] # All info is put in a list in this order to put in database
     
     try:
         cursor.execute(addData, data)
         connection.commit() # This commits the new data.
 
         print(f"\nYour account number is {account_num}, you MUST not forget this.")
-        print(f"\nNew user has been created.\nWelcome {name}!")
+        print(f"\nNew user has been created.\nWelcome {first_name} {last_name}!")
 
     except:
         connection.rollback() # If an error occured while commiting, this reverses the commit.
@@ -168,21 +163,28 @@ def sign_in():
 "**************************************************************************************"
 
 
+# def Deposit():
+
+
+
+"**************************************************************************************"
+
+
+
 def main():
-    while True:
-        log_or_sign = input("\nLogin, sign up, or exit? ")
+    
+        log_or_sign = tk.Label(text="\nLogin, sign up, or exit? ")
+        entry = tk.Entry()
 
-        if log_or_sign.lower() == "login":
-            login()
+        #  button = tk.Button(
+        #         text="Login",
+        #         width=25,
+        #         height=5,
+        #         bg="blue",
+        #         fg="yellow",
+        #     )
+        #  log_or_sign = tk.Entry()
+         
 
-        elif log_or_sign.lower() == "sign up":
-            sign_in()
-
-        elif log_or_sign.lower() == "exit":
-            print("Thank you, goodbye!")
-            break
-
-        else:
-            print("You can only type login in, sign up, or exit.")
 
 main()
