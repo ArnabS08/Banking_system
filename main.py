@@ -61,12 +61,15 @@ print("\nWelcome to Monke Bank!")
             
 
 "**************************************************************************************"
+
+
 def login():
     found1 = False
     found2 = False
+    # found3 = False
     repeat = True
     while repeat == True:
-        # global real_pin
+        # Checks if any PIN in the database is equal to the PIN that was input.
         real_pin = int(input("\nPIN: "))
         cursor.execute("SELECT pin FROM data")
         pins = cursor.fetchall()
@@ -74,22 +77,39 @@ def login():
             if real_pin == x[0]:
                 found1 = True
 
-        # global real_accnum
-        real_accnum = int(input("Account Number: "))
+        # Checks if any account number in the database is equal to the account number that was input.
+        real_accnum = int(input("Account number: "))
         cursor.execute("SELECT account_num FROM data")
         accountNums = cursor.fetchall()
         for x in accountNums:
             if real_accnum == x[0]:
                 found2 = True
 
+        # # Checks if any name in the database is equal to the name that was input.
+        # real_name = input("First name: ")
+        # cursor.execute("SELECT first_name FROM data")
+        # names = cursor.fetchall()
+        # for x in names:
+        #     if real_name == x:
+        #         found3 = True
+
+        # Checks if everything is correct
         if found1 and found2 == True:
             print("welcome!")
-            # name = ("SELECT first_name, last_name FROM data WHERE account_num[0]=%s")
-            # print(f"Welcome {cursor.execute(name, real_accnum)}")
+            # query = "SELECT first_name FROM data WHERE account_num =%s" (real_accnum)
+            # print(query)
+            # cursor.execute("SELECT first_name FROM data WHERE account_num =%s", str(real_accnum))
+            
+            acc = (f"SELECT first_name FROM data WHERE account_num = {real_accnum}")
+            cursor.execute(acc)
+            name =(cursor.fetchone()[0])
+
+            print(f"Welcome {name}")
             repeat = False
         else:
-            print("\nWrong PIN or Account Number")
+            print("\nWrong PIN or account number.")
             print("Please try again")
+
 
 # def login_checker():
 #     global repeat
@@ -135,6 +155,14 @@ def sign_in():
 
 
 "**************************************************************************************"
+
+
+# def Deposit():
+
+
+
+"**************************************************************************************"
+
 
 def main():
     while True:
