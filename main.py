@@ -58,19 +58,44 @@ print("\nWelcome to Monke Bank!")
 #                 if found == False:
 #                     print("Wrong Account Number")
 #                     print("try again")
-            
+
 
 "**************************************************************************************"
 
 
 def deposit(balance, real_accnum):
-    deposit_num = float(input("Amount of deposit: "))
+    while True:
+        try:
+            deposit_num = float(input("\nAmount of deposit: "))
+            break
+        except:
+            print("You can only input a number.")
+
     deposit_num = balance + deposit_num
     deposit = (f"UPDATE data SET balance ={deposit_num} WHERE account_num = {real_accnum}")
     cursor.execute(deposit)
     connection.commit()
     print(f"${deposit_num - balance} has been deposited")
     print(f"You now have ${deposit_num}")
+
+"**************************************************************************************"
+
+
+def withdraw(balance, real_accnum):
+    while True:
+        try:
+            withdrawal_num = float(input("\nAmount of withdrawal: "))
+            break
+        except:
+            print("You can only input a number.")
+
+    withdrawal_num = balance - withdrawal_num
+    withdraw = (f"UPDATE data SET balance ={withdrawal_num} WHERE account_num = {real_accnum}")
+    cursor.execute(withdraw)
+    connection.commit()
+    print(f"\n${balance - withdrawal_num} has been withdrew")
+    print(f"You now have ${withdrawal_num}")
+
 
 "**************************************************************************************"
 
@@ -109,18 +134,16 @@ def login():
                 print("\nWrong account number.")
                 print("Please try again.")
         else:
-            print("\nWrong PIN.")
-            print("Please try again.")
+            print("\nWrong PIN.\nPlease try again.")
 
     while True:
-        d_or_w = input("\nWould you like to deposit or withdrawal? ")
+        d_or_w = input("\nWould you like to deposit or withdraw? ")
         if d_or_w.lower() == "deposit":
             deposit(balance, real_accnum)
-        elif d_or_w.lower() == "withdrawal":
-            # withdraw()
-            print("") #### TAKE OUT
+        elif d_or_w.lower() == "withdraw":
+            withdraw(balance, real_accnum)
         else:
-            print("You can only type deposit or withdrawal")
+            print("You can only type deposit or withdraw.\nPlease try again")
 
 
 # def login_checker():
@@ -162,7 +185,7 @@ def sign_in():
 
     except:
         connection.rollback() # If an error occured while commiting, this reverses the commit.
-        print("There was a problem while creating your account, please try again.")
+        print("There was a problem while creating your account.\nplease try again.")
 
 
 "**************************************************************************************"
@@ -183,6 +206,6 @@ def main():
             break
 
         else:
-            print("You can only type login in, sign up, or exit.")
+            print("You can only type login in, sign up, or exit.\nPlease try again")
 
 main()
