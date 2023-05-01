@@ -62,8 +62,17 @@ print("\nWelcome to Monke Bank!")
 
 "**************************************************************************************"
 
+def balance_finder(real_accnum):
+    balanceFinder = (f"SELECT balance FROM data WHERE account_num = {real_accnum}")
+    cursor.execute(balanceFinder)
+    global balance
+    balance = float(cursor.fetchone()[0])
 
-def deposit(balance, real_accnum):
+
+"**************************************************************************************"
+
+
+def deposit(real_accnum):
     while True:
         try:
             deposit_num = float(input("\nAmount of deposit: "))
@@ -71,6 +80,7 @@ def deposit(balance, real_accnum):
         except:
             print("You can only input a number.")
 
+    balance_finder(real_accnum)
     deposit_num = balance + deposit_num
     deposit = (f"UPDATE data SET balance ={deposit_num} WHERE account_num = {real_accnum}")
     cursor.execute(deposit)
@@ -81,7 +91,7 @@ def deposit(balance, real_accnum):
 "**************************************************************************************"
 
 
-def withdraw(balance, real_accnum):
+def withdraw(real_accnum):
     while True:
         try:
             withdrawal_num = float(input("\nAmount of withdrawal: "))
@@ -89,6 +99,7 @@ def withdraw(balance, real_accnum):
         except:
             print("You can only input a number.")
 
+    balance_finder(real_accnum)
     withdrawal_num = balance - withdrawal_num
     withdraw = (f"UPDATE data SET balance ={withdrawal_num} WHERE account_num = {real_accnum}")
     cursor.execute(withdraw)
@@ -124,9 +135,7 @@ def login():
                 cursor.execute(nameFinder)
                 print_name = (cursor.fetchone()[0])
 
-                balanceFinder = (f"SELECT balance FROM data WHERE account_num = {real_accnum}")
-                cursor.execute(balanceFinder)
-                balance = float(cursor.fetchone()[0])
+                balance_finder(real_accnum)
 
                 print(f"\nWelcome {print_name}!\nYou have ${balance} in your account.")
                 repeat = False
@@ -139,9 +148,9 @@ def login():
     while True:
         d_or_w = input("\nWould you like to deposit or withdraw? ")
         if d_or_w.lower() == "deposit":
-            deposit(balance, real_accnum)
+            deposit(real_accnum)
         elif d_or_w.lower() == "withdraw":
-            withdraw(balance, real_accnum)
+            withdraw(real_accnum)
         else:
             print("You can only type deposit or withdraw.\nPlease try again")
 
