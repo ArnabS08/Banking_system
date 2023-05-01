@@ -125,34 +125,39 @@ def login():
                 found1 = True
 
         if found1 == True:
-            # Checks if any account number in the database is equal to the account number that was input.
-            real_accnum = int(input("Account number: "))
-            accFinder = (f"SELECT account_num FROM data WHERE pin={real_pin}")
-            cursor.execute(accFinder)
-            accountNums = (cursor.fetchone()[0]) # fetchs one data and takes the first index from the tuple ex: takes the 111111 from (111111,)
-            if real_accnum == accountNums:
-                nameFinder = (f"SELECT name FROM data WHERE account_num = {real_accnum}")
-                cursor.execute(nameFinder)
-                print_name = (cursor.fetchone()[0])
+            repeat = True
+            while repeat == True:
+                # Checks if any account number in the database is equal to the account number that was input.
+                real_accnum = int(input("Account number: "))
+                accFinder = (f"SELECT account_num FROM data WHERE pin={real_pin}")
+                cursor.execute(accFinder)
+                accountNums = (cursor.fetchone()[0]) # fetchs one data and takes the first index from the tuple ex: takes the 111111 from (111111,)
+                if real_accnum == accountNums:
+                    nameFinder = (f"SELECT name FROM data WHERE account_num = {real_accnum}")
+                    cursor.execute(nameFinder)
+                    print_name = (cursor.fetchone()[0])
 
-                balance_finder(real_accnum)
+                    balance_finder(real_accnum)
 
-                print(f"\nWelcome {print_name}!\nYou have ${balance} in your account.")
-                repeat = False
-            else:
-                print("\nWrong account number.")
-                print("Please try again.")
+                    print(f"\nWelcome {print_name}!\nYou have ${balance} in your account.")
+                    repeat = False
+                else:
+                    print("\nWrong account number.")
+                    print("Please try again.")
+            repeat = False
         else:
             print("\nWrong PIN.\nPlease try again.")
 
     while True:
-        d_or_w = input("\nWould you like to deposit or withdraw? ")
+        d_or_w = input("\nWould you like to deposit, withdraw, or go back? ")
         if d_or_w.lower() == "deposit":
             deposit(real_accnum)
         elif d_or_w.lower() == "withdraw":
             withdraw(real_accnum)
+        elif d_or_w.lower() == "go back":
+            main()
         else:
-            print("You can only type deposit or withdraw.\nPlease try again")
+            print("You can only type deposit, withdraw, or go back.\nPlease try again")
 
 
 # def login_checker():
@@ -174,7 +179,7 @@ def login():
 def sign_in():
     name = input("Name: ")
     birth_date = input("Date of birth (YYYY-MM-DD): ")
-    pin = int(input("Create PIN: "))
+    pin = int(input("Create PIN (####): "))
     account_num = random.randint(100000,999999)
 
     cursor.execute("SELECT account_num FROM data")
@@ -212,7 +217,7 @@ def main():
 
         elif log_or_sign.lower() == "exit":
             print("Thank you, goodbye!")
-            break
+            exit()
 
         else:
             print("You can only type login in, sign up, or exit.\nPlease try again")
